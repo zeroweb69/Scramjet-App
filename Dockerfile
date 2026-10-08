@@ -1,20 +1,15 @@
-FROM node:18-alpine
+   FROM node:20-alpine
 
-ENV NODE_ENV=production
-ARG NPM_BUILD="npm install --omit=dev"
-EXPOSE 8080/tcp
+   ENV NODE_ENV=production
+   EXPOSE 8080/tcp
 
-LABEL maintainer="Mercury Workshop"
-LABEL summary="Scramjet Demo Image"
-LABEL description="Example application of Scramjet"
+   WORKDIR /app
 
-WORKDIR /app
+   RUN apk add --upgrade --no-cache python3 make g++ git
 
-COPY ["package.json", "package-lock.json", "./"]
-RUN apk add --upgrade --no-cache python3 make g++
-RUN $NPM_BUILD
+   COPY package.json ./
+   RUN npm install --omit=dev
 
-COPY . .
+   COPY . .
 
-ENTRYPOINT [ "node" ]
-CMD ["src/index.js"]
+   CMD ["node", "src/index.js"]
